@@ -24,7 +24,7 @@ class Scheme
     public static function init($basePath)
     {
         // Create global scheme instance
-        self::$schemes[] = new Scheme($basePath, self::BASE);
+        self::$schemes[self::BASE] = new Scheme($basePath, self::BASE);
 
         // Read all directories in base configuration path
         foreach (glob($basePath . '*', GLOB_ONLYDIR) as $environment) {

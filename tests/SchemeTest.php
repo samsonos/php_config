@@ -11,7 +11,7 @@ class MainTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Init configuration schemes
-        \samsonos\config\Scheme::init(__DIR__.'config');
+        \samsonos\config\Scheme::init(__DIR__.'/config/');
     }
 
     /** Test Init */
