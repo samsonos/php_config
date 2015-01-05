@@ -105,7 +105,7 @@ class Scheme
             require_once($file);
 
             // Get last loaded class name
-            $class = array_pop(array_diff(get_declared_classes(), $classes));
+            $class = end(array_diff(get_declared_classes(), $classes));
 
             // If this is a entity configuration class ancestor
             if (is_subclass_of($class, __NAMESPACE__.'\Entity')) {
@@ -133,21 +133,21 @@ class Scheme
      * will be used to configure object.
      *
      * @param mixed $object Object for configuration with entity
-     * @param string $entity Configuration entity name
+     * @param string $identifier Configuration entity name
      * @param array|null $params Collection of configuration parameters
      */
-    public function implement($object, $entity = null, $params = null)
+    public function implement($object, $identifier = null, $params = null)
     {
         // If no entity identifier is passed get it from object class
-        $entity = isset($entity) ? $entity : $this->identifier(get_class($object));
+        $identifier = isset($identifier) ? $identifier : $this->identifier(get_class($object));
 
-        /** @var Entity $entity Pointer to entity instance */
-        $entity = & $this->entities[$entity];
+        /** @var Entity $pointer Pointer to entity instance */
+        $pointer = & $this->entities[$identifier];
 
         // If we have this entity configuration
-        if (isset($entity)) {
+        if (isset($pointer)) {
             // Implement entity configuration to object
-            $entity->implement($object, $params);
+            $pointer->implement($object, $params);
         }
     }
 }
