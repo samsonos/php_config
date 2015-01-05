@@ -27,16 +27,16 @@ class Scheme
      */
     public static function init($basePath)
     {
-        elapsed('Init configuration system');
-
         // Create global scheme instance
         self::$schemes[] = new Scheme($basePath, self::BASE);
 
         // Read all directories in base configuration path
-        foreach(glob($basePath . '/*' , GLOB_ONLYDIR) as $environment) {
-            trace($environment);
-            //self::$schemes[] = new Scheme();
+        foreach(glob($basePath . '*' , GLOB_ONLYDIR) as $environment) {
+            // Create new configuration scheme
+            self::$schemes[] = new Scheme($environment, basename($environment));
         }
+
+        trace(self::$schemes,true);
     }
 
     /** @var string Current configuration environment */
@@ -69,9 +69,10 @@ class Scheme
         $this->environment = $environment;
 
         // Build path to environment configuration folder
-        $this->path = $basePath.'/'.(isset($environment) ? $environment.'/' : '');
+        $this->path = $path;
 
-        if (file_exists($this->path)) {
+        // Check scheme folder existance
+        if (!file_exists($this->path)) {
             return e('Environment(##) configuration path(##) does not exists', E_SAMSON_CORE_ERROR, array($environment, $this->path));
         }
     }
