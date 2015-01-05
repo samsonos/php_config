@@ -105,7 +105,8 @@ class Scheme
             require_once($file);
 
             // Get last loaded class name
-            $class = end(array_diff(get_declared_classes(), $classes));
+            $loadedClasses = array_diff(get_declared_classes(), $classes);
+            $class = end($loadedClasses);
 
             // If this is a entity configuration class ancestor
             if (is_subclass_of($class, __NAMESPACE__.'\Entity')) {
