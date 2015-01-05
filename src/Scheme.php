@@ -1,12 +1,7 @@
 <?php
-/**
- * Created by Vitaly Iegorov <egorov@samsonos.com>
- * on 15.09.14 at 12:10
- */
- namespace samsonos\config;
+namespace samsonos\config;
 
- use samson\core\Event;
- use samson\core\File;
+use samson\core\Event;
 
  /**
  * Generic SamsonPHP core configuration system
@@ -106,7 +101,7 @@ class Scheme
         // Iterate all declared classes
         foreach ($entityFiles as $class => $file) {
             // If this class is Configurator ancestor
-            if (is_subclass_of($class, __NAMESPACE__.'\Entity')) {
+            if (is_a($class, __NAMESPACE__.'\Entity')) {
                 // Get lowercase module name, removing "config" keyword
                 $moduleId = str_replace('config', '', strtolower($class));
 
