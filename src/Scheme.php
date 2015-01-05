@@ -29,7 +29,7 @@ class Scheme
         // Read all directories in base configuration path
         foreach (glob($basePath . '*', GLOB_ONLYDIR) as $environment) {
             // Create new configuration scheme
-            self::$schemes[] = new Scheme($environment.'/', basename($environment));
+            self::$schemes[basename($environment)] = new Scheme($environment.'/', basename($environment));
         }
     }
 
