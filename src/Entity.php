@@ -12,9 +12,6 @@ namespace samsonos\config;
  */
 class Entity
 {
-    /** @var mixed Pointer to object instance to be configured */
-    public $entity;
-
     /** @var array Key => value entity configuration parameters */
     public $params;
 
@@ -22,11 +19,8 @@ class Entity
      * Constructor
      * @param object $entity Pointer to configured module
      */
-    public function __construct(& $entity = null)
+    public function __construct()
     {
-        // Store entity pointer
-        $this->entity = & $entity;
-
         // Get all configuration entity variables
         $variables = get_object_vars($this);
 
@@ -40,14 +34,24 @@ class Entity
                     get_class_vars(__CLASS__)
                 )
             );
+        }
+    }
 
-            // Iterate all children class variables
-            foreach ($this->params as $var => $value) {
-                // If module has configured property defined
-                if (property_exists($entity, $var)) {
-                    // Set module variable value
-                    $entity->$var = $value;
-                }
+    /**
+     * Configure object with configuration entity parameters.
+     * If additional parameters key=>value collection is passed, they
+     * will be used to configure object.
+     *
+     * @param mixed $object
+     */
+    public function implement(& $object, $params = null)
+    {
+        // Use entity params if external is not passed, iterate all children class variables
+        foreach (isset($params) ? $params : $this->params as $var => $value) {
+            // If module has configured property defined
+            if (property_exists($object, $var)) {
+                // Set module variable value
+                $object->$var = $value;
             }
         }
     }
