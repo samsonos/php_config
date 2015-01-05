@@ -130,8 +130,13 @@ class Scheme
 
     /**
      * Configure object with configuration entity parameters.
+     *
+     * If now $identifier is passed - automatic identifier generation
+     * will take place from object class name.
+     *
      * If additional parameters key=>value collection is passed, they
-     * will be used to configure object.
+     * will be used to configure object instead of entity configuration
+     * class.
      *
      * @param mixed $object Object for configuration with entity
      * @param string $identifier Configuration entity name
