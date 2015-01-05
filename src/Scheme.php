@@ -26,7 +26,7 @@ class Scheme
 
     /**
      * Initialize all configuration logic
-     * @param string Path to configuration base folder
+     * @param string $basePath Path to configuration base folder
      */
     public static function init($basePath)
     {
@@ -61,7 +61,7 @@ class Scheme
      * Configurators located at base root configuration folder considered as generic
      * module configurators.
      *
-     * @param string $basePath    Base path to configuration root folder
+     * @param string $path    Base path to configuration root folder
      * @param string $environment Configuration environment name
      */
     public function __construct($path, $environment)
@@ -114,9 +114,6 @@ class Scheme
                 $this->entities[$moduleId] = $class;
             }
         }
-
-        trace($this->environment);
-        trace($this->entities, true);
     }
 }
 
@@ -130,4 +127,3 @@ Event::subscribe('core.created', array(__NAMESPACE__.'\Scheme', 'init'));
 // Subscribe to core module loaded core event
 //Event::subscribe('core.module_loaded', array('\samson\core\Config', 'implement'));
 //[PHPCOMPRESSOR(remove,end)]
- 
