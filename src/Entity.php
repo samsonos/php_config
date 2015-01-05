@@ -25,7 +25,7 @@ class Entity
         $variables = get_object_vars($this);
 
         // If any variables available
-        if (sizeof($variables) && isset($entity)) {
+        if (sizeof($variables)) {
             // Build variables collection, clear empty variables
             $this->params = array_filter(
                 // Get only nested class variables array
