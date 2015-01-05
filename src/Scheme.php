@@ -18,6 +18,9 @@ class Scheme
     /** Global/Default scheme marker */
     const BASE = 'global';
 
+    /** Entity configuration file pattern */
+    const ENTITY_PATTERN = '*Config.php';
+
     /** @var Scheme[] Collection of available schemes */
     public static $schemes = array();
 
@@ -31,22 +34,20 @@ class Scheme
         self::$schemes[] = new Scheme($basePath, self::BASE);
 
         // Read all directories in base configuration path
-        foreach(glob($basePath . '*' , GLOB_ONLYDIR) as $environment) {
+        foreach (glob($basePath . '*', GLOB_ONLYDIR) as $environment) {
             // Create new configuration scheme
-            self::$schemes[] = new Scheme($environment, basename($environment));
+            self::$schemes[] = new Scheme($environment.'/', basename($environment));
         }
-
-        trace(self::$schemes,true);
     }
 
     /** @var string Current configuration environment */
-    public $environment;
+    protected $environment;
 
     /** @var string Configuration folder path */
-    public $path;
+    protected $path;
 
     /** @var array Collection of module identifier => configurator class */
-    public $configurators;
+    protected $entities;
 
     /**
      * Create configuration instance.
@@ -71,9 +72,10 @@ class Scheme
         // Build path to environment configuration folder
         $this->path = $path;
 
-        // Check scheme folder existance
-        if (!file_exists($this->path)) {
-            return e('Environment(##) configuration path(##) does not exists', E_SAMSON_CORE_ERROR, array($environment, $this->path));
+        // Check scheme folder existence
+        if (file_exists($this->path)) {
+            // Load scheme entities
+            $this->load();
         }
     }
 
@@ -85,28 +87,36 @@ class Scheme
      */
     public function load()
     {
+        // Collection loaded entity classes
+        $entityFiles = array();
+
+        // Fill array of entity files with keys of file names without extension
+        foreach (glob($this->path . self::ENTITY_PATTERN) as $file) {
+            $entityFiles[basename($file, '.php')] = $file;
+        }
+
         // Iterate all files in configuration folder path
-        foreach(File::dir($this->path) as $configFile) {
-            // Match only files ending with ...Config.php
-            if(stripos($configFile, 'Config.php') !== false) {
-                // Register configuration class in system
-                require_once($configFile);
-            }
+        foreach ($entityFiles as $configFile) {
+            // Register configuration class in system
+            require_once($configFile);
         }
 
         // At this point we consider that all configuration classes for this environment has been required
 
         // Iterate all declared classes
-        foreach (get_declared_classes() as $class) {
+        foreach ($entityFiles as $class => $file) {
             // If this class is Configurator ancestor
-            if (is_subclass_of($class, __NAMESPACE__.'\Configurator')) {
+            if (is_subclass_of($class, __NAMESPACE__.'\Entity')) {
                 // Get lowercase module name, removing "config" keyword
                 $moduleId = str_replace('config', '', strtolower($class));
 
                 // Store module identifier - configurator class name
-                $this->configurators[$moduleId] = $class;
+                $this->entities[$moduleId] = $class;
             }
         }
+
+        trace($this->environment);
+        trace($this->entities, true);
     }
 }
 
