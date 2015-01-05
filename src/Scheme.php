@@ -80,24 +80,11 @@ class Scheme
      */
     public function load()
     {
-        // Collection loaded entity classes
-        $entityFiles = array();
-
         // Fill array of entity files with keys of file names without extension
         foreach (glob($this->path . self::ENTITY_PATTERN) as $file) {
-            $entityFiles[basename($file, '.php')] = $file;
-        }
+            // Get class name, it must match file name
+            $class = basename($file, '.php');
 
-        // Iterate all files in configuration folder path
-        foreach ($entityFiles as $configFile) {
-            // Register configuration class in system
-            require_once($configFile);
-        }
-
-        // At this point we consider that all configuration classes for this environment has been required
-
-        // Iterate all declared classes
-        foreach ($entityFiles as $class => $file) {
             // If this class is Configurator ancestor
             if (is_a($class, __NAMESPACE__.'\Entity')) {
                 // Get lowercase module name, removing "config" keyword
@@ -112,7 +99,7 @@ class Scheme
 
 //[PHPCOMPRESSOR(remove,start)]
 // Subscribe to core started event for initializing configuration system
-\samson\core\Event::subscribe('core.created', array(__NAMESPACE__.'\Scheme', 'init'));
+//\samson\core\Event::subscribe('core.created', array(__NAMESPACE__.'\Scheme', 'init'));
 
 // Subscribe to core started event to load all possible module configurations
 //Event::subscribe('core.routing', array('\samson\core\Config', 'init'));
