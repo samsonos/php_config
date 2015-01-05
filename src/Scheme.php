@@ -24,12 +24,28 @@ class Scheme
     public static function init($basePath)
     {
         // Create global scheme instance
-        self::$schemes[self::BASE] = new Scheme($basePath, self::BASE);
+        self::create($basePath, self::BASE);
 
         // Read all directories in base configuration path
-        foreach (glob($basePath . '*', GLOB_ONLYDIR) as $environment) {
+        foreach (glob($basePath . '*', GLOB_ONLYDIR) as $path) {
             // Create new configuration scheme
-            self::$schemes[basename($environment)] = new Scheme($environment.'/', basename($environment));
+            self::create($path);
+        }
+    }
+
+    /**
+     * Create configuration scheme
+     * @param string $path Path to configuration scheme folder
+     * @param string $environment Configuration scheme environment identifier
+     */
+    public static function create($path, $environment = null)
+    {
+        // If no environment identifier is passed - use it from path
+        $environment = !isset($environment) ? basename($path) : $environment;
+
+        // Check if have NOT already created configuration for this environment
+        if (!isset(self::$schemes[$environment])) {
+            self::$schemes[$environment] = new Scheme($path . '/', $environment);
         }
     }
 
@@ -40,7 +56,7 @@ class Scheme
     protected $path;
 
     /** @var array Collection of module identifier => configurator class */
-    protected $entities;
+    public $entities = array();
 
     /**
      * Create configuration instance.
@@ -82,28 +98,56 @@ class Scheme
     {
         // Fill array of entity files with keys of file names without extension
         foreach (glob($this->path . self::ENTITY_PATTERN) as $file) {
-            // Get class name, it must match file name
-            $class = basename($file, '.php');
+            // Store loaded classes
+            $classes = get_declared_classes();
 
-            // If this class is Configurator ancestor
-            if (is_a($class, __NAMESPACE__.'\Entity')) {
-                // Get lowercase module name, removing "config" keyword
-                $moduleId = str_replace('config', '', strtolower($class));
+            // Load entity configuration file
+            require_once($file);
 
-                // Store module identifier - configurator class name
-                $this->entities[$moduleId] = $class;
+            // Get last loaded class name
+            $class = array_pop(array_diff(get_declared_classes(), $classes));
+
+            // If this is a entity configuration class ancestor
+            if (is_subclass_of($class, __NAMESPACE__.'\Entity')) {
+                // Store module identifier - entity configuration object
+                $this->entities[$this->identifier($class)] = new $class();
             }
         }
     }
+
+    /**
+     * Convert entity configuration or object class name to identifier
+     * @param string $class Entity configuration class name
+     * @return string Entity real class name
+     */
+    public function identifier($class)
+    {
+        // TODO: Consider adding namespaces?
+        $class = substr($class, strrpos($class, '\\') + 1);
+        return str_replace('config', '', strtolower($class));
+    }
+
+    /**
+     * Configure object with configuration entity parameters.
+     * If additional parameters key=>value collection is passed, they
+     * will be used to configure object.
+     *
+     * @param mixed $object Object for configuration with entity
+     * @param string $entity Configuration entity name
+     * @param array|null $params Collection of configuration parameters
+     */
+    public function implement($object, $entity = null, $params = null)
+    {
+        // If no entity identifier is passed get it from object class
+        $entity = isset($entity) ? $entity : $this->identifier(get_class($object));
+
+        /** @var Entity $entity Pointer to entity instance */
+        $entity = & $this->entities[$entity];
+
+        // If we have this entity configuration
+        if (isset($entity)) {
+            // Implement entity configuration to object
+            $entity->implement($object, $params);
+        }
+    }
 }
-
-//[PHPCOMPRESSOR(remove,start)]
-// Subscribe to core started event for initializing configuration system
-//\samson\core\Event::subscribe('core.created', array(__NAMESPACE__.'\Scheme', 'init'));
-
-// Subscribe to core started event to load all possible module configurations
-//Event::subscribe('core.routing', array('\samson\core\Config', 'init'));
-
-// Subscribe to core module loaded core event
-//Event::subscribe('core.module_loaded', array('\samson\core\Config', 'implement'));
-//[PHPCOMPRESSOR(remove,end)]

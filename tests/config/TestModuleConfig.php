@@ -10,6 +10,6 @@ namespace project;
 class TestModuleConfig extends \samsonos\config\Entity
 {
     public $parameterString = '1';
-    public $parameterInt = 2;
-    public $parameterArray = array(3, '4');
+    public $parameterInt = 1;
+    public $parameterArray = array('global'=>1, '1');
 }

@@ -5,11 +5,11 @@
  * Date: 05.01.2015
  * Time: 22:29
  */
-namespace project;
+namespace project\dev;
 
 class TestModuleConfig extends \samsonos\config\Entity
 {
-    public $parameterString = '1';
+    public $parameterString = '2';
     public $parameterInt = 2;
-    public $parameterArray = array(3, '4');
+    public $parameterArray = array('dev' => 2, '2');
 }
