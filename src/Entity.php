@@ -17,7 +17,6 @@ class Entity
 
     /**
      * Constructor
-     * @param object $entity Pointer to configured module
      */
     public function __construct()
     {
