@@ -1,9 +1,7 @@
 <?php
 namespace samsonos\config;
 
-use samson\core\Event;
-
- /**
+/**
  * Generic SamsonPHP core configuration system
  * @author Vitaly Egorov <egorov@samsonos.com>
  * @copyright 2014 SamsonOS
@@ -114,7 +112,7 @@ class Scheme
 
 //[PHPCOMPRESSOR(remove,start)]
 // Subscribe to core started event for initializing configuration system
-Event::subscribe('core.created', array(__NAMESPACE__.'\Scheme', 'init'));
+\samson\core\Event::subscribe('core.created', array(__NAMESPACE__.'\Scheme', 'init'));
 
 // Subscribe to core started event to load all possible module configurations
 //Event::subscribe('core.routing', array('\samson\core\Config', 'init'));
