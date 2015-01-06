@@ -20,7 +20,7 @@ class Entity
      * @param mixed $object Object for configuration with entity
      * @param array|null $params Collection of configuration parameters
      */
-    public function implement(& $object, $params = null)
+    public function configure(& $object, $params = null)
     {
         // Use entity params if external is not passed, iterate all children class variables
         foreach (isset($params) ? $params : get_object_vars($this) as $var => $value) {

@@ -40,7 +40,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $object = new TestModule();
 
         // Configure object
-        $this->globalScheme->implement($object, 'testmodule');
+        $this->globalScheme->configure($object, 'testmodule');
 
         $this->assertEquals('1', $object->parameterInt);
         $this->assertEquals('1', $object->parameterString);
@@ -54,7 +54,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $object = new TestModule();
 
         // Configure object
-        Scheme::$schemes['dev']->implement($object, 'testmodule');
+        Scheme::$schemes['dev']->configure($object, 'testmodule');
 
         $this->assertEquals('2', $object->parameterInt);
         $this->assertEquals('2', $object->parameterString);

@@ -142,7 +142,7 @@ class Scheme
      * @param string $identifier Configuration entity name
      * @param array|null $params Collection of configuration parameters
      */
-    public function implement($object, $identifier = null, $params = null)
+    public function configure($object, $identifier = null, $params = null)
     {
         // If no entity identifier is passed get it from object class
         $identifier = isset($identifier) ? $identifier : $this->identifier(get_class($object));
@@ -153,7 +153,7 @@ class Scheme
         // If we have this entity configuration
         if (isset($pointer)) {
             // Implement entity configuration to object
-            $pointer->implement($object, $params);
+            $pointer->configure($object, $params);
         }
     }
 }
