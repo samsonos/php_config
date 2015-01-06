@@ -74,4 +74,18 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('2', $object->parameterString);
         $this->assertArrayHasKey('inherit', $object->parameterArray);
     }
+
+    /** Test implement not found - use global */
+    public function testImplementNotFound()
+    {
+        // Create object for configuration
+        $object = new TestModule();
+
+        // Configure object
+        Scheme::$schemes['deploy']->configure($object, 'testmodule');
+
+        $this->assertEquals('1', $object->parameterInt);
+        $this->assertEquals('1', $object->parameterString);
+        $this->assertArrayHasKey('global', $object->parameterArray);
+    }
 }

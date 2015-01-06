@@ -7,9 +7,9 @@
  */
 namespace project\deploy;
 
-class TestModuleConfig extends \samsonos\config\Entity
+class OtherModuleConfig extends \samsonos\config\Entity
 {
-    public $parameterString = '1';
+    public $parameterString = '2';
     public $parameterInt = 2;
-    public $parameterArray = array(3, '4');
+    public $parameterArray = array('dev' => 2, '2');
 }
