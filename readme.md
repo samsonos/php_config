@@ -11,12 +11,14 @@ OOP based configuration system. This approach uses all abilities of PHP OOP for 
 
 ## Configuration scheme
 Your project can have any amount of possible configurations, which is usually used for different environments, such as *development, test, deploy, production* stages,
-for this purposes we have created ```samsonos\config\Scheme```, each of them corresponds to specific environment. In practice you should have _base configuration folder_
-by default it located at ```app/config``` folder. 
+for this purposes we have created ```samsonos\config\Scheme```, each of them corresponds to specific environment. In practice you should have _base configuration folder_,
+by default it is located at ```app/config``` folder. 
 
 ### Global configuration 
-In root of your ```app/config``` folder you should create your default entity configuration classes. If no current configuration environment would be specified, this
-entity configuration classes would be used automatically.
+In root of your ```app/config``` folder you should create your default [entity configuration classes](#entity-configuration). If no current configuration environment would be specified, this
+entity configuration classes would be used automatically. 
+> IMPORTANT! If you have specified some configuration environment(for example ```production```) but you do not have entity configuration class for some module in it - Global
+configuration entity will be used for it instead.
 
 ### Creating configuration environment
 To create new configuration environment you should create new folder in your _base configuration folder_(by default it located at ```app/config```), for example we 
@@ -40,7 +42,7 @@ Your entity configuration class name should meet next logic: ```[EntityIdentifie
 * All entity configuration class names must end with ```Config```
 
 Your entity configuration class namespace should meet next logic:
-* Every class has to have any name space defined(by default your project name)
+* Every class has to have any namespace defined(by default your project name)
 * Global entity configuration classes(located at [base configuration folder](#configuration-scheme)), should
 have name space defined in previous list item.
 * Other environments entity configuration classes (located at [other inner folders](#creating-configuration-environment)),
