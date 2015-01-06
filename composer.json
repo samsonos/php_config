@@ -18,5 +18,6 @@
         "psr-0": {
             "samsonos\\config\\": "src/"
         }
-    }
+    },
+    "extra": { "samson_module_ignore": "1" }
 }
