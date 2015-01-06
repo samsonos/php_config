@@ -20,7 +20,8 @@
         "classmap": ["src/"],
         "psr-0": {
             "samsonos\\config\\": "src/"
-        }
+        },
+        "files" : ["src/samson.php"]
     },
     "extra": { "samson_module_ignore": "1" }
 }

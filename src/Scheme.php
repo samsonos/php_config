@@ -17,6 +17,9 @@ class Scheme
     /** @var Scheme[] Collection of available schemes */
     public static $schemes = array();
 
+    /** @var  Scheme Pointer to current active configuration scheme */
+    public static $active;
+
     /**
      * Initialize all configuration logic
      * @param string $basePath Path to configuration base folder
@@ -25,6 +28,12 @@ class Scheme
     {
         // Create global scheme instance
         self::create($basePath, self::BASE);
+
+        // By default set global scheme as active
+        self::$active = & self::$schemes[self::BASE];
+
+        // Subscribe to core module configure event
+        \samson\core\Event::subscribe('core.module.configure', array(\samsonos\config\Scheme::$active, 'configure'));
 
         // Read all directories in base configuration path
         foreach (glob($basePath . '*', GLOB_ONLYDIR) as $path) {
@@ -123,8 +132,11 @@ class Scheme
      */
     public function identifier($class)
     {
-        // TODO: Consider adding namespaces?
-        $class = substr($class, strrpos($class, '\\') + 1);
+        // If namespace is present
+        if (($classNamePos = strrpos($class, '\\')) !== false) {
+            $class = substr($class, $classNamePos+1);
+        }
+
         return str_replace('config', '', strtolower($class));
     }
 

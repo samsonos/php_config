@@ -24,7 +24,6 @@ class Entity
     {
         // Use entity params if external is not passed, iterate all children class variables
         foreach (isset($params) ? $params : get_object_vars($this) as $var => $value) {
-
             // If module has configured property defined
             if (property_exists($object, $var)) {
                 // Set module variable value
