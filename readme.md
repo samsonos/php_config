@@ -1,4 +1,4 @@
-#SamsonPHP Configuration system
+# SamsonPHP Configuration system
 
 OOP based configuration system. This approach uses all abilities of PHP OOP for creating configurations based on classes.  
  
@@ -17,7 +17,7 @@ by default it is located at ```app/config``` folder.
 ### Global configuration 
 In root of your ```app/config``` folder you should create your default [entity configuration classes](#entity-configuration). If no current configuration environment would be specified, this
 entity configuration classes would be used automatically. 
-> IMPORTANT! If you have specified some configuration environment(for example ```production```) but you do not have entity configuration class for some module in it - Global
+> IMPORTANT! If you have specified some configuration environment(for example ```production```) but you do not have entity configuration class for some module/object in it - Global
 configuration entity will be used for it instead.
 
 ### Creating configuration environment
@@ -25,15 +25,14 @@ To create new configuration environment you should create new folder in your _ba
 want to create ```production``` environment, new folder path would be: ```app/config/production/```. And all entity configuration classes there would correspond
 to your ```production``` configuration scheme, which will be created automatically.
 
-##Entity configuration
+## Entity configuration
 To configure your project modules\objects  - you should use classes, for correct finding this classes among others, we force you to extend our base entity configuration class - 
 ```samsonos\config\Entity```:
 ```php
 namespace project;
 
 class entityIDConfig extends samsonos\config\Entity
-{
-    public $parameter = 'value';
+{    
 }
 ```
 
@@ -58,5 +57,43 @@ class entityIDConfig extends samsonos\config\Entity
 ```
 
 > IMPORTANT! As we use PSR-* standard - Class name must match file name
+
+### Possible configuration parameters
+The main beauty of OOP configuration approach is that you can specify any possible  by PHP values as predefined class field values, the main
+limitation is that they have to be ```public``` accessible:
+```php
+namespace project;
+
+class entityIDConfig extends samsonos\config\Entity
+{    
+    public $stringParameter = 'I am a string';
+    public $integerParameter = 1123;
+    public $arrayParameter = array('1', 123);
+}
+```
+
+### Prohibited operations  
+Unfortunately you cannot predefine calculations and string concatenations(and perform other operations) in class field values, but you can 
+always perform it in ```__construct``` method. When [configuration scheme](#configuration-scheme) is created, for every environment all 
+[entity configuration](#entity-configuration) instances are being created - so their ```__construct``` method is performed, where you
+can make any possible operation.
+
+```php
+namespace project;
+
+class entityIDConfig extends samsonos\config\Entity
+{    
+    public $stringParameter = 'I am a string';
+    public $integerParameter = 1123;
+    public $arrayParameter = array('1', 123);
+    public $complicatedParameter;
+    
+    public function __construct()
+    {
+        // Fill your parameter with what you want
+        $this->complicatedParameter = $this->stringParameter . dirname(__DIR__); 
+    }
+}
+```
 
 
