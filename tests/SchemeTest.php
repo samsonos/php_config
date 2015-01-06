@@ -76,7 +76,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
     }
 
     /** Test implement not found - use global */
-    public function testImplementNotFound()
+    public function testNotFoundUseGlobal()
     {
         // Create object for configuration
         $object = new TestModule();
