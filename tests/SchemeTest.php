@@ -60,4 +60,18 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('2', $object->parameterString);
         $this->assertArrayHasKey('dev', $object->parameterArray);
     }
+
+    /** Test implement*/
+    public function testImplementInherit()
+    {
+        // Create object for configuration
+        $object = new TestModule();
+
+        // Configure object
+        Scheme::$schemes['inherit']->configure($object, 'testmodule');
+
+        $this->assertEquals('3', $object->parameterInt);
+        $this->assertEquals('2', $object->parameterString);
+        $this->assertArrayHasKey('inherit', $object->parameterArray);
+    }
 }
