@@ -96,7 +96,7 @@ class entityIDConfig extends samsonos\config\Entity
 ```
 
 ### Extending existing configurations
-Also extending parent entity configuration is available, if want to ass just some little changes to some entity configuration we can just extend it:
+Also extending parent entity configuration is available, if want to add just some little changes to some entity configuration we can just extend it:
 ```php
 namespace project\other;
 
