@@ -109,7 +109,7 @@ class Scheme
             $class = end($loadedClasses);
 
             // If this is a entity configuration class ancestor
-            if (is_subclass_of($class, __NAMESPACE__.'\Entity')) {
+            if (in_array(__NAMESPACE__.'\Entity', class_parents($class))) {
                 // Store module identifier - entity configuration object
                 $this->entities[$this->identifier($class)] = new $class();
             }
