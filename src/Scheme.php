@@ -150,16 +150,15 @@ class Scheme
         /** @var Entity $pointer Pointer to entity instance */
         $pointer = & $this->entities[$identifier];
 
-        /** @var Entity $pointer Pointer to entity instance in base scheme */
+        /** @var Entity $base Pointer to entity instance in base scheme */
         $base = & self::$schemes[self::BASE]->entities[$identifier];
-
-        // Try current scheme entity configuration or try global scheme
-        $pointer = isset($pointer) ? $pointer : (isset($base) ? $base : null);
 
         // If we have found this entity configuration
         if (isset($pointer)) {
             // Implement entity configuration to object
             $pointer->configure($object, $params);
+        } elseif (isset($base)) { // Implement global entity configuration to object
+            $base->configure($object, $params);
         }
     }
 }
