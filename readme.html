@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title></title>
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/highlight.dark.css">
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="/">
+                The title
+                <small class="hidden-xs hidden-sm">
+                    This is the default subtitle!
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container">
+            <div class="row">
+
+                
+                <section id="content" class="col-sm-12">
+                    <h1>SamsonPHP Configuration system</h1>
+<p>OOP based configuration system. This approach uses all abilities of PHP OOP for creating configurations based on classes.  </p>
+<p><a href="https://packagist.org/packages/samsonos/php_config"><img alt="Latest Stable Version" src="https://poser.pugx.org/samsonos/php_config/v/stable.svg" /></a> 
+<a href="https://travis-ci.org/samsonos/php_config"><img alt="Build Status" src="https://travis-ci.org/samsonos/php_config.png" /></a> 
+<a href="https://scrutinizer-ci.com/g/samsonos/php_config/?branch=master"><img alt="Code Coverage" src="https://scrutinizer-ci.com/g/samsonos/php_config/badges/coverage.png?b=master" /></a>
+<a href="https://codeclimate.com/github/samsonos/php_config"><img alt="Code Climate" src="https://codeclimate.com/github/samsonos/php_config/badges/gpa.svg" /></a> 
+<a href="https://packagist.org/packages/samsonos/php_config"><img alt="Total Downloads" src="https://poser.pugx.org/samsonos/php_config/downloads.svg" /></a>
+<a href="https://scrutinizer-ci.com/g/samsonos/php_config/?branch=master"><img alt="Scrutinizer Code Quality" src="https://scrutinizer-ci.com/g/samsonos/php_config/badges/quality-score.png?b=master" /></a></p>
+<h2>Configuration scheme</h2>
+<p>Your project can have any amount of possible configurations, which is usually used for different environments, such as <em>development, test, deploy, production</em> stages,
+for this purposes we have created <code>samsonos\config\Scheme</code>, each of them corresponds to specific environment. In practice you should have <em>base configuration folder</em>,
+by default it is located at <code>app/config</code> folder. </p>
+<h3>Global configuration</h3>
+<p>In root of your <code>app/config</code> folder you should create your default <a href="#entity-configuration">entity configuration classes</a>. If no current configuration environment would be specified, this
+entity configuration classes would be used automatically. </p>
+<blockquote>
+<p>IMPORTANT! If you have specified some configuration environment(for example <code>production</code>) but you do not have entity configuration class for some module/object in it - Global
+configuration entity will be used for it instead if present.</p>
+</blockquote>
+<h3>Creating configuration environment</h3>
+<p>To create new configuration environment you should create new folder in your <em>base configuration folder</em>(by default it located at <code>app/config</code>), for example we want to create <code>production</code> environment, new folder path would be: <code>app/config/production/</code>. And all entity configuration classes there would correspond to your <code>production</code> configuration scheme, which will be created automatically.</p>
+<h2>Entity configuration</h2>
+<p>To configure your project modules\objects  - you should use classes, for correct finding this classes among others, we force you to extend our base entity configuration class <code>samsonos\config\Entity</code> :</p>
+<pre><code class="language-php">namespace project;
+
+class entityIDConfig extends samsonos\config\Entity
+{    
+}</code></pre>
+<p>Your entity configuration class name should meet next logic: <code>[EntityIdentifier]Config</code>:</p>
+<ul>
+<li><code>EntityIdentifier</code> - configured module/object identifier  </li>
+<li>All entity configuration class names must end with <code>Config</code></li>
+</ul>
+<p>Your entity configuration class namespace should meet next logic:</p>
+<ul>
+<li>Every class has to have any namespace defined(by default your project name)</li>
+<li>Global entity configuration classes(located at <a href="#configuration-scheme">base configuration folder</a>), should
+have name space defined in previous list item.</li>
+<li>Other environments entity configuration classes (located at <a href="#creating-configuration-environment">other inner folders</a>),
+should have namespace: <code>[ParentNamespace]\[EnvironmentName]</code>, if we extend our previous entity configuration example, but now for <code>production</code> environment:</li>
+</ul>
+<pre><code class="language-php">namespace project\production;
+
+class entityIDConfig extends samsonos\config\Entity
+{
+    public $parameter = 'value';
+}</code></pre>
+<blockquote>
+<p>IMPORTANT! As we use PSR-* standard - Class name must match file name</p>
+</blockquote>
+<h3>Possible configuration parameters</h3>
+<p>The main beauty of OOP configuration approach is that you can specify any possible  by PHP values as predefined class field values, the main
+limitation is that they have to be <code>public</code> accessible:</p>
+<pre><code class="language-php">namespace project;
+
+class entityIDConfig extends samsonos\config\Entity
+{    
+    public $stringParameter = 'I am a string';
+    public $integerParameter = 1123;
+    public $arrayParameter = array('1', 123);
+}</code></pre>
+<h3>Prohibited operations</h3>
+<p>Unfortunately you cannot predefine calculations and string concatenations(and perform other operations) in class field values, but you can 
+always perform it in <code>__construct</code> method. When <a href="#configuration-scheme">configuration scheme</a> is created, for every environment all 
+<a href="#entity-configuration">entity configuration</a> instances are being created - so their <code>__construct</code> method is performed, where you
+can make any possible operation.</p>
+<pre><code class="language-php">namespace project;
+
+class entityIDConfig extends samsonos\config\Entity
+{    
+    public $stringParameter = 'I am a string';
+    public $integerParameter = 1123;
+    public $arrayParameter = array('1', 123);
+    public $complicatedParameter;
+
+    public function __construct()
+    {
+        // Fill your parameter with what you want
+        $this-&gt;complicatedParameter = $this-&gt;stringParameter . dirname(__DIR__); 
+    }
+}</code></pre>
+<h3>Extending existing configurations</h3>
+<p>Also extending parent entity configuration is available, if want to add just some little changes to some entity configuration we can just extend it:</p>
+<pre><code class="language-php">// Mention - class name is the same, only namespace is different
+namespace project\other;
+
+// We are extending global configuration from previous example
+class entityIDConfig extends project\entityIDConfig
+{
+  // We overload only this parameter, as we want all to be the same as parent
+  public $integerParameter = 2222;
+}</code></pre>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="http://yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
