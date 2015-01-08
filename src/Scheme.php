@@ -14,50 +14,6 @@ class Scheme
     /** Entity configuration file pattern */
     const ENTITY_PATTERN = '*Config.php';
 
-    /** @var Scheme[] Collection of available schemes */
-    public static $schemes = array();
-
-    /** @var  Scheme Pointer to current active configuration scheme */
-    public static $active;
-
-    /**
-     * Initialize all configuration logic
-     * @param string $basePath Path to configuration base folder
-     */
-    public static function init($basePath)
-    {
-        // Create global scheme instance
-        self::create($basePath, self::BASE);
-
-        // By default set global scheme as active
-        self::$active = & self::$schemes[self::BASE];
-
-        // Subscribe to core module configure event
-        \samson\core\Event::subscribe('core.module.configure', array(\samsonos\config\Scheme::$active, 'configure'));
-
-        // Read all directories in base configuration path
-        foreach (glob($basePath . '*', GLOB_ONLYDIR) as $path) {
-            // Create new configuration scheme
-            self::create($path);
-        }
-    }
-
-    /**
-     * Create configuration scheme
-     * @param string $path Path to configuration scheme folder
-     * @param string $environment Configuration scheme environment identifier
-     */
-    public static function create($path, $environment = null)
-    {
-        // If no environment identifier is passed - use it from path
-        $environment = !isset($environment) ? basename($path) : $environment;
-
-        // Check if have NOT already created configuration for this environment
-        if (!isset(self::$schemes[$environment])) {
-            self::$schemes[$environment] = new Scheme($path . '/', $environment);
-        }
-    }
-
     /** @var string Current configuration environment */
     protected $environment;
 
@@ -153,6 +109,8 @@ class Scheme
      * @param mixed $object Object for configuration with entity
      * @param string $identifier Configuration entity name
      * @param array|null $params Collection of configuration parameters
+     *
+     * @return boolean True if we have successfully configured object
      */
     public function configure($object, $identifier = null, $params = null)
     {
@@ -162,15 +120,13 @@ class Scheme
         /** @var Entity $pointer Pointer to entity instance */
         $pointer = & $this->entities[$identifier];
 
-        /** @var Entity $base Pointer to entity instance in base scheme */
-        $base = & self::$schemes[self::BASE]->entities[$identifier];
-
         // If we have found this entity configuration
         if (isset($pointer)) {
             // Implement entity configuration to object
-            $pointer->configure($object, $params);
-        } elseif (isset($base)) { // Implement global entity configuration to object
-            $base->configure($object, $params);
+            return $pointer->configure($object, $params);
         }
+
+        // We have failed
+        return false;
     }
 }

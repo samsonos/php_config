@@ -19,6 +19,8 @@ class Entity
      *
      * @param mixed $object Object for configuration with entity
      * @param array|null $params Collection of configuration parameters
+     *
+     * @return boolean True
      */
     public function configure(& $object, $params = null)
     {
@@ -30,5 +32,7 @@ class Entity
                 $object->$var = $value;
             }
         }
+
+        return true;
     }
 }
