@@ -104,7 +104,7 @@ class Manager
      * @param string $identifier Configuration entity name
      * @param array|null $params Collection of configuration parameters
      */
-    public function configure($object, $identifier = null, $params = null)
+    public function configure(& $object, $identifier = null, $params = null)
     {
         // Try to configure using current scheme
         if (!$this->active->configure($object, $identifier, $params)) {

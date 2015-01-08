@@ -74,7 +74,7 @@ class Scheme
             $class = end($loadedClasses);
 
             // If this is a entity configuration class ancestor
-            if (in_array(__NAMESPACE__.'\Entity', class_parents($class))) {
+            if (isset($class{0}) && in_array(__NAMESPACE__.'\Entity', class_parents($class))) {
                 // Store module identifier - entity configuration object
                 $this->entities[$this->identifier($class)] = new $class();
             }
@@ -112,7 +112,7 @@ class Scheme
      *
      * @return boolean True if we have successfully configured object
      */
-    public function configure($object, $identifier = null, $params = null)
+    public function configure(& $object, $identifier = null, $params = null)
     {
         // If no entity identifier is passed get it from object class
         $identifier = isset($identifier) ? $identifier : $this->identifier(get_class($object));
@@ -122,6 +122,7 @@ class Scheme
 
         // If we have found this entity configuration
         if (isset($pointer)) {
+
             // Implement entity configuration to object
             return $pointer->configure($object, $params);
         }

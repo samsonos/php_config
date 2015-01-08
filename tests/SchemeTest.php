@@ -1,6 +1,7 @@
 <?php
 namespace tests;
 
+use samsonos\config\Manager;
 use samsonos\config\Scheme;
 
 /**
@@ -12,14 +13,21 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
     /** @var  Scheme */
     protected $globalScheme;
 
+    /** @var  \samsonos\config\Manager */
+    protected $manager;
+
     /** Tests init */
     public function setUp()
     {
         // Init configuration schemes
-        Scheme::init(__DIR__.'/config/');
+        if (!isset($this->manager)) {
+            $this->manager = new Manager();
+            $this->manager->init(__DIR__ . '/config/');
+            //var_dump($this->manager->schemes);
+        }
 
         // Get default scheme
-        $this->globalScheme = Scheme::$schemes[Scheme::BASE];
+        $this->globalScheme = $this->manager->schemes[Scheme::BASE];
 
         // Import object for testing
         require_once 'TestModule.php';
@@ -28,9 +36,9 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
     /** Test Init */
     public function testInit()
     {
-        $this->assertArrayHasKey('global', Scheme::$schemes);
-        $this->assertArrayHasKey('deploy', Scheme::$schemes);
-        $this->assertArrayHasKey('dev', Scheme::$schemes);
+        $this->assertArrayHasKey('global', $this->manager->schemes);
+        $this->assertArrayHasKey('deploy', $this->manager->schemes);
+        $this->assertArrayHasKey('dev', $this->manager->schemes);
     }
 
     /** Test implement*/
@@ -40,7 +48,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $object = new TestModule();
 
         // Configure object
-        $this->globalScheme->configure($object, 'testmodule');
+        $this->manager->configure($object, 'testmodule');
 
         $this->assertEquals('1', $object->parameterInt);
         $this->assertEquals('1', $object->parameterString);
@@ -54,7 +62,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $object = new TestModule();
 
         // Configure object
-        Scheme::$schemes['dev']->configure($object, 'testmodule');
+        $this->manager->schemes['dev']->configure($object, 'testmodule');
 
         $this->assertEquals('2', $object->parameterInt);
         $this->assertEquals('2', $object->parameterString);
@@ -68,7 +76,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $object = new TestModule();
 
         // Configure object
-        Scheme::$schemes['inherit']->configure($object, 'testmodule');
+        $this->manager->schemes['inherit']->configure($object, 'testmodule');
 
         $this->assertEquals('3', $object->parameterInt);
         $this->assertEquals('2', $object->parameterString);
@@ -82,7 +90,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $object = new TestModule();
 
         // Configure object
-        Scheme::$schemes['deploy']->configure($object, 'testmodule');
+        $this->manager->schemes['deploy']->configure($object, 'testmodule');
 
         $this->assertEquals('1', $object->parameterInt);
         $this->assertEquals('1', $object->parameterString);
