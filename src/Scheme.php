@@ -57,10 +57,9 @@ class Scheme
     }
 
     /**
-     * Load configuration for this environment.
-     *
-     * All module configurator files must end with "Config.php" to be
-     * loaded.
+     * Load entity configuration classes for this scheme.
+     * Function scans all required classes and matches them by
+     * specified scheme path.
      */
     public function load()
     {
@@ -72,7 +71,7 @@ class Scheme
                 $reflector = new \ReflectionClass($class);
 
                 // Get path to file if it matches current scheme path
-                if (strpos($reflector->getFileName(), $this->path) !== false) {
+                if (dirname($reflector->getFileName()) == $this->path) {
                     // Store module identifier - entity configuration object
                     $this->entities[$this->identifier($class)] = new $class();
                 }

@@ -20,6 +20,10 @@ class Manager
 
     /**
      * Load all entity configuration classes in specific location.
+     *
+     * All module files must match Entity::FILE_PATTERN to be
+     * loaded.
+     *
      * @param string $path Path for importing classes
      */
     public static function import($path)
