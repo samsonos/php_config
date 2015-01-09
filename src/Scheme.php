@@ -80,6 +80,8 @@ class Scheme
 
                 // Get last loaded class name
                 $loadedClasses = array_diff(get_declared_classes(), $classes);
+
+                // Get loaded class - store class to static collection
                 $class = end($loadedClasses);
             }
 
