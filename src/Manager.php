@@ -39,7 +39,8 @@ class Manager
                 require_once($file);
 
                 // Get loaded class - store class to static collection
-                self::$classes[$file] = end(array_diff(get_declared_classes(), $classes));
+                $classes = array_diff(get_declared_classes(), $classes);
+                self::$classes[$file] = end($classes);
             }
         }
     }
