@@ -64,31 +64,18 @@ class Scheme
      */
     public function load()
     {
-        // Fill array of entity files with keys of file names without extension
-        foreach (glob($this->path . self::ENTITY_PATTERN) as $file) {
-
-            // Try to get class from static collection
-            $class = & self::$classes[$file];
-
-            // If we have not already loaded this class before with other schemes
-            if (!isset(self::$classes[$file])) {
-                // Store loaded classes
-                $classes = get_declared_classes();
-
-                // Load entity configuration file
-                require_once($file);
-
-                // Get last loaded class name
-                $loadedClasses = array_diff(get_declared_classes(), $classes);
-
-                // Get loaded class - store class to static collection
-                $class = end($loadedClasses);
-            }
-
+        // Iterate all loaded classes matching class name pattern
+        foreach (preg_grep(Entity::CLASS_PATTERN, get_declared_classes()) as $class) {
             // If this is a entity configuration class ancestor
             if (in_array(__NAMESPACE__.'\Entity', class_parents($class))) {
-                // Store module identifier - entity configuration object
-                $this->entities[$this->identifier($class)] = new $class();
+                // Get class reflection object
+                $reflector = new \ReflectionClass($class);
+
+                // Get path to file if it matches current scheme path
+                if (strpos($reflector->getFileName(), $this->path) !== false) {
+                    // Store module identifier - entity configuration object
+                    $this->entities[$this->identifier($class)] = new $class();
+                }
             }
         }
     }

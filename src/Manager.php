@@ -15,6 +15,39 @@ use samson\core\Event;
  */
 class Manager
 {
+    /** @var array Collection of file path -> class loaded */
+    protected static $classes = array();
+
+    /**
+     * Load all entity configuration classes in specific location.
+     * @param string $path Path for importing classes
+     */
+    public static function import($path)
+    {
+        // Fill array of entity files with keys of file names without extension
+        foreach (glob($path .'/'. Entity::FILE_PATTERN) as $file) {
+
+            // Try to get class from static collection
+            $class = & self::$classes[$file];
+
+            // If we have not already loaded this class before with other schemes
+            if (!isset($class)) {
+                // Store loaded classes
+                $classes = get_declared_classes();
+
+                // Load entity configuration file
+                require($file);
+
+                // Get last loaded class name
+                $loadedClasses = array_diff(get_declared_classes(), $classes);
+
+                // Get loaded class - store class to static collection
+                $class = end($loadedClasses);
+            }
+        }
+    }
+
+
     /** @var Scheme[] Collection of available schemes */
     public $schemes = array();
 
@@ -83,6 +116,9 @@ class Manager
      */
     public function create($path, $environment = null)
     {
+        // Import all valid entity configuration classes from path
+        self::import($path);
+
         // If no environment identifier is passed - use it from path
         $environment = !isset($environment) ? basename($path) : $environment;
 
@@ -91,7 +127,7 @@ class Manager
 
         // Check if have NOT already created configuration for this environment
         if (!isset($pointer)) {
-            $pointer = new Scheme($path . '/', $environment);
+            $pointer = new Scheme(realpath($path . '/'), $environment);
         }
     }
 

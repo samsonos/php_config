@@ -12,6 +12,12 @@ namespace samsonos\config;
  */
 class Entity
 {
+    /** Entity configuration file pattern */
+    const FILE_PATTERN = '*Config.php';
+
+    /** Entity configuration class name pattern */
+    const CLASS_PATTERN = '/Config$/';
+
     /**
      * Configure object with configuration entity parameters.
      * If additional parameters key=>value collection is passed, they
