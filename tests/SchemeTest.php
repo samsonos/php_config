@@ -92,6 +92,9 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         // Create object for configuration
         $object = new TestModule();
 
+        // Switch to unreal configuration scheme
+        $this->manager->change('notreal');
+
         // Switch to deploy configuration scheme
         $this->manager->change('deploy');
 
