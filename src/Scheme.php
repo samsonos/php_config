@@ -97,6 +97,23 @@ class Scheme
     }
 
     /**
+     * Retrieve entity configuration by identifier.
+     * If entity configuration not found null will be
+     * returned.
+     *
+     * @param string $identifier Entity identifier
+     * @return Entity|null Entity configuration pointer or null
+     */
+    public function & entity($identifier)
+    {
+        // Convert identifier of entity configuration name is passed
+        $identifier = $this->identifier($identifier);
+
+        // Return pointer
+        return $this->entities[$identifier];
+    }
+
+    /**
      * Configure object with configuration entity parameters.
      *
      * If now $identifier is passed - automatic identifier generation
@@ -118,11 +135,10 @@ class Scheme
         $identifier = isset($identifier) ? $identifier : $this->identifier(get_class($object));
 
         /** @var Entity $pointer Pointer to entity instance */
-        $pointer = & $this->entities[$identifier];
+        $pointer = $this->entity($identifier);
 
         // If we have found this entity configuration
         if (isset($pointer)) {
-
             // Implement entity configuration to object
             return $pointer->configure($object, $params);
         }
