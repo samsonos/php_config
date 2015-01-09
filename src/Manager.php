@@ -40,10 +40,18 @@ class Manager
         $this->active = & $this->schemes[$environment];
 
         // Subscribe active configuration scheme to core module configure event
-        Event::subscribe('core.module.configure', array($this->active, 'configure'));
+        Event::subscribe('core.module.configure', array($this, 'configure'));
 
+        // If we have successfully changed configuration scheme
         if (!isset($this->active)) {
             // Signal error
+            Event::fire(
+                'error',
+                array(
+                    $this,
+                    'Cannot change configuration scheme to ['.$environment.'] - Configuration scheme does not exists'
+                )
+            );
         }
     }
 
