@@ -7,27 +7,41 @@ use samsonos\config\Scheme;
 /**
  * Created by Vitaly Iegorov <egorov@samsonos.com>
  * on 04.08.14 at 16:42
+ *
+ * IMPORTANT:
+ * As our configuration system based on classes and class loading
+ * we cannot use standard approach with setUp() as when we will call second test
+ * (second call to setUp()) all configuration classes would already be loaded and
+ * thought configuration manager schemes would be empty, this why we use static
+ * test init method setUpBeforeClass() to create one static configuration manager instance
+ * and them use it as reference in all further tests.
  */
 class SchemeTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var  Scheme */
-    protected $globalScheme;
+    /** @var  \samsonos\config\Manager */
+    protected static $staticManager;
 
     /** @var  \samsonos\config\Manager */
     protected $manager;
 
+    /** @var  Scheme */
+    protected $globalScheme;
+
+    public static function setUpBeforeClass()
+    {
+        // Init configuration schemes
+        self::$staticManager = new Manager();
+        self::$staticManager->init(__DIR__ . '/config/');
+    }
+
     /** Tests init */
     public function setUp()
     {
-        // Init configuration schemes
-        if (!isset($this->manager)) {
-            $this->manager = new Manager();
-            $this->manager->init(__DIR__ . '/config/');
-            //var_dump($this->manager->schemes);
-        }
+        $this->manager = & self::$staticManager;
+        //var_dump($this->manager->schemes);
 
         // Get default scheme
-        $this->globalScheme = $this->manager->schemes[Scheme::BASE];
+        $this->globalScheme = & $this->manager->schemes[Scheme::BASE];
 
         // Import object for testing
         require_once 'TestModule.php';
@@ -61,8 +75,11 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         // Create object for configuration
         $object = new TestModule();
 
+        // Switch to deploy configuration scheme
+        $this->manager->change('dev');
+
         // Configure object
-        $this->manager->schemes['dev']->configure($object, 'testmodule');
+        $this->manager->configure($object, 'testmodule');
 
         $this->assertEquals('2', $object->parameterInt);
         $this->assertEquals('2', $object->parameterString);
@@ -75,8 +92,11 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         // Create object for configuration
         $object = new TestModule();
 
+        // Switch to deploy configuration scheme
+        $this->manager->change('inherit');
+
         // Configure object
-        $this->manager->schemes['inherit']->configure($object, 'testmodule');
+        $this->manager->configure($object, 'testmodule');
 
         $this->assertEquals('3', $object->parameterInt);
         $this->assertEquals('2', $object->parameterString);
@@ -89,8 +109,11 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         // Create object for configuration
         $object = new TestModule();
 
+        // Switch to deploy configuration scheme
+        $this->manager->change('deploy');
+
         // Configure object
-        $this->manager->schemes['deploy']->configure($object, 'testmodule');
+        $this->manager->configure($object, 'testmodule');
 
         $this->assertEquals('1', $object->parameterInt);
         $this->assertEquals('1', $object->parameterString);
