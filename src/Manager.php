@@ -36,7 +36,7 @@ class Manager
                 $classes = get_declared_classes();
 
                 // Load entity configuration file
-                require($file);
+                require_once($file);
 
                 // Get loaded class - store class to static collection
                 self::$classes[$file] = end(array_diff(get_declared_classes(), $classes));
