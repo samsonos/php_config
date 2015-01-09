@@ -86,7 +86,7 @@ class Scheme
             }
 
             // If this is a entity configuration class ancestor
-            if (isset($class{0}) && in_array(__NAMESPACE__.'\Entity', class_parents($class))) {
+            if (in_array(__NAMESPACE__.'\Entity', class_parents($class))) {
                 // Store module identifier - entity configuration object
                 $this->entities[$this->identifier($class)] = new $class();
             }
