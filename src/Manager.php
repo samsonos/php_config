@@ -30,12 +30,8 @@ class Manager
     {
         // Fill array of entity files with keys of file names without extension
         foreach (glob($path .'/'. Entity::FILE_PATTERN) as $file) {
-
-            // Try to get class from static collection
-            $class = & self::$classes[$file];
-
             // If we have not already loaded this class before with other schemes
-            if (!isset($class)) {
+            if (!isset(self::$classes[$file])) {
                 // Store loaded classes
                 $classes = get_declared_classes();
 
@@ -43,7 +39,7 @@ class Manager
                 require($file);
 
                 // Get loaded class - store class to static collection
-                $class = end(array_diff(get_declared_classes(), $classes));
+                self::$classes[$file] = end(array_diff(get_declared_classes(), $classes));
             }
         }
     }
