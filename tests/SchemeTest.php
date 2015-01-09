@@ -7,37 +7,20 @@ use samsonos\config\Scheme;
 /**
  * Created by Vitaly Iegorov <egorov@samsonos.com>
  * on 04.08.14 at 16:42
- *
- * IMPORTANT:
- * As our configuration system based on classes and class loading
- * we cannot use standard approach with setUp() as when we will call second test
- * (second call to setUp()) all configuration classes would already be loaded and
- * thought configuration manager schemes would be empty, this why we use static
- * test init method setUpBeforeClass() to create one static configuration manager instance
- * and them use it as reference in all further tests.
  */
 class SchemeTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var  \samsonos\config\Manager */
-    protected static $staticManager;
-
     /** @var  \samsonos\config\Manager */
     protected $manager;
 
     /** @var  Scheme */
     protected $globalScheme;
 
-    public static function setUpBeforeClass()
-    {
-        // Init configuration schemes
-        self::$staticManager = new Manager();
-        self::$staticManager->init(__DIR__ . '/config/');
-    }
-
     /** Tests init */
     public function setUp()
     {
-        $this->manager = & self::$staticManager;
+        $this->manager = new Manager();
+        $this->manager->init(__DIR__ . '/config/');
         //var_dump($this->manager->schemes);
 
         // Get default scheme

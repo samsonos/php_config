@@ -14,6 +14,9 @@ class Scheme
     /** Entity configuration file pattern */
     const ENTITY_PATTERN = '*Config.php';
 
+    /** @var array Collection of file path -> class loaded */
+    protected static $classes = array();
+
     /** @var string Current configuration environment */
     protected $environment;
 
@@ -63,15 +66,22 @@ class Scheme
     {
         // Fill array of entity files with keys of file names without extension
         foreach (glob($this->path . self::ENTITY_PATTERN) as $file) {
-            // Store loaded classes
-            $classes = get_declared_classes();
 
-            // Load entity configuration file
-            require_once($file);
+            // Try to get class from static collection
+            $class = & self::$classes[$file];
 
-            // Get last loaded class name
-            $loadedClasses = array_diff(get_declared_classes(), $classes);
-            $class = end($loadedClasses);
+            // If we have not already loaded this class before with other schemes
+            if (!isset(self::$classes[$file])) {
+                // Store loaded classes
+                $classes = get_declared_classes();
+
+                // Load entity configuration file
+                require_once($file);
+
+                // Get last loaded class name
+                $loadedClasses = array_diff(get_declared_classes(), $classes);
+                $class = end($loadedClasses);
+            }
 
             // If this is a entity configuration class ancestor
             if (isset($class{0}) && in_array(__NAMESPACE__.'\Entity', class_parents($class))) {
