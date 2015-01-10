@@ -116,7 +116,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $this->manager->change();
 
         // Configure object
-        $this->manager->configure($object, 'testconfigurablemodule');
+        $this->manager->configure($object);
 
         $this->assertNotEquals('1', $object->parameterInt);
         $this->assertNotEquals('1', $object->parameterString);

@@ -147,15 +147,16 @@ class Scheme
             } else { // Generic logic - implement entity configuration to object
                 return $pointer->configure($object, $params);
             }
-        } else { // Signal error
-            Event::fire(
-                'error',
-                array(
-                    $this,
-                    'Cannot configure entity['.$identifier.'] - Entity configuration does not exists'
-                )
-            );
         }
+
+        // Signal error
+        Event::fire(
+            'error',
+            array(
+                $this,
+                'Cannot configure entity['.$identifier.'] - Entity configuration does not exists'
+            )
+        );
 
         // We have failed
         return false;
