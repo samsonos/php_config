@@ -8,6 +8,7 @@ OOP based configuration system. This approach uses all abilities of PHP OOP for 
 [![Code Climate](https://codeclimate.com/github/samsonos/php_config/badges/gpa.svg)](https://codeclimate.com/github/samsonos/php_config) 
 [![Total Downloads](https://poser.pugx.org/samsonos/php_config/downloads.svg)](https://packagist.org/packages/samsonos/php_config)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/samsonos/php_config/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/samsonos/php_config/?branch=master)
+[![Stories in Ready](https://badge.waffle.io/samsonos/php_config.png?label=ready&title=Ready)](https://waffle.io/samsonos/php_config)
 
 ## Configuration scheme
 Your project can have any amount of possible configurations, which is usually used for different environments, such as *development, test, deploy, production* stages,
