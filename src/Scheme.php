@@ -103,15 +103,22 @@ class Scheme
      * returned.
      *
      * @param string $identifier Entity identifier
-     * @return Entity|null Entity configuration pointer or null
+     * @param mixed $entity Return found entity configuration pointer
+     * @return Entity|boolean Entity configuration pointer or bool
      */
-    public function & entity($identifier)
+    public function & entity($identifier, & $entity = null)
     {
         // Convert identifier of entity configuration name is passed
-        $identifier = $this->identifier($identifier);
+        $pointer = & $this->entities[$this->identifier($identifier)];
 
-        // Return pointer
-        return $this->entities[$identifier];
+        // PHP bugs =) We cannot assign referenced value pointer to array element
+        $entity = $pointer;
+
+        // Prepare return value - pointer or bool
+        $return = (func_num_args() == 2) ? isset($entity) : $entity;
+
+        // Also PHP bugs - we cannot return reference from ternary operator
+        return $return;
     }
 
     /**
@@ -151,25 +158,23 @@ class Scheme
      */
     public function configure(& $object, $identifier = null, $params = null)
     {
-        // If no entity identifier is passed get it from object class
         /** @var Entity $pointer Pointer to entity instance */
-        $pointer = $this->entity(isset($identifier) ? $identifier : get_class($object));
+        $pointer = null;
 
-        // If we have found this entity configuration
-        if (isset($pointer)) {
+        // If we have found this entity configuration, If no entity identifier is passed get it from object class
+        if ($this->entity(isset($identifier) ? $identifier : get_class($object), $pointer)) {
             return $this->handleConfigure($object, $pointer, $params);
+        } else { // Signal error
+            Event::fire(
+                'error',
+                array(
+                    $this,
+                    'Cannot configure entity[' . $identifier . '] - Entity configuration does not exists'
+                )
+            );
+
+            // We have failed
+            return false;
         }
-
-        // Signal error
-        Event::fire(
-            'error',
-            array(
-                $this,
-                'Cannot configure entity['.$identifier.'] - Entity configuration does not exists'
-            )
-        );
-
-        // We have failed
-        return false;
     }
 }
