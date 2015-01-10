@@ -115,7 +115,7 @@ class Scheme
         $entity = $pointer;
 
         // Prepare return value - pointer or bool
-        $return = (func_num_args() == 2) ? isset($entity) : $entity;
+        $return = (func_num_args() == 2) ? isset($pointer) : $pointer;
 
         // Also PHP bugs - we cannot return reference from ternary operator
         return $return;
