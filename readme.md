@@ -129,4 +129,8 @@ $manager = new \samsonos\config\Manager('.../path/to/base/folder');
 $manager->init();
 ```
 
+### Switching configuration
+If you want to change current active manager configuration use should use ```change($identifier)``` method:
+* ```$identifier``` - Configuration scheme identifier
+
 
