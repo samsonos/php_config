@@ -109,4 +109,24 @@ class entityIDConfig extends project\entityIDConfig
 }
 ```
 
+## Configuration manager
+All project modules/objects configuration is processed via configuration manager ```samsonos\config\Manager```, you must create instance of it, you must specify
+only one parameter ```Path to base configuration folder```, for initialization of manager you should use ```init()``` method, this methods are specially separated
+to give ability to load entity configuration classes as you wish.  
+```php 
+$manager = new \samsonos\config\Manager('.../path/to/base/folder');
+$manager->init();
+```
+
+### Loading entity configuration classes
+We have created special static method for loading entity configuration ```samsonos\config\Manager::import($path)```, this method is used internally
+when configuration scheme is being created, but you can use anywhere before ```init()``` is called to manually loading entity configuration classes.
+
+```php 
+$manager = new \samsonos\config\Manager('.../path/to/base/folder');
+\samsonos\config\Manager::import('../my/custom/config/path);
+\samsonos\config\Manager::import('../my/custom/config/path2);
+$manager->init();
+```
+
 
