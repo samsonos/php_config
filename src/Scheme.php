@@ -140,8 +140,13 @@ class Scheme
 
         // If we have found this entity configuration
         if (isset($pointer)) {
-            // Implement entity configuration to object
-            return $pointer->configure($object, $params);
+            // If this class knows how to configure it self
+            if (class_implements($object, __NAMESPACE__.'\IConfigurable')) {
+                // Call custom configuration implementation
+                return $object->configure($pointer);
+            } else { // Generic logic - implement entity configuration to object
+                return $pointer->configure($object, $params);
+            }
         } else { // Signal error
             Event::fire(
                 'error',

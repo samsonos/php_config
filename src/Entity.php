@@ -30,21 +30,15 @@ class Entity
      */
     public function configure(& $object, $params = null)
     {
-        // If this class knows how to configure it self
-        if (class_implements($object, __NAMESPACE__.'\IConfigurable')) {
-            // Call custom configuration implementation
-            return $object->configure($this);
-        } else { // Generic logic
-            // Use entity params if external is not passed, iterate all children class variables
-            foreach (isset($params) ? $params : get_object_vars($this) as $var => $value) {
-                // If module has configured property defined
-                if (property_exists($object, $var)) {
-                    // Set module variable value
-                    $object->$var = $value;
-                }
+        // Use entity params if external is not passed, iterate all children class variables
+        foreach (isset($params) ? $params : get_object_vars($this) as $var => $value) {
+            // If module has configured property defined
+            if (property_exists($object, $var)) {
+                // Set module variable value
+                $object->$var = $value;
             }
-
-            return true;
         }
+
+        return true;
     }
 }
