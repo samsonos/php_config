@@ -115,6 +115,25 @@ class Scheme
     }
 
     /**
+     * Perform object configuration with specific entity
+     * @param mixed $object Object instance pointer
+     * @param Entity $entity Entity configuration pointer
+     * @param mixed $params Collection of parameters
+     * @return bool True if everything went fine, otherwise false
+     */
+    protected function handleConfigure(& $object, Entity & $entity, $params = null)
+    {
+        // If this class knows how to configure it self
+        if (class_implements($object, __NAMESPACE__.'\IConfigurable')) {
+            /** @var IConfigurable $object */
+            // Call custom configuration implementation
+            return $object->configure($entity);
+        } else { // Generic logic - implement entity configuration to object
+            return $entity->configure($object, $params);
+        }
+    }
+
+    /**
      * Configure object with configuration entity parameters.
      *
      * If now $identifier is passed - automatic identifier generation
@@ -140,13 +159,7 @@ class Scheme
 
         // If we have found this entity configuration
         if (isset($pointer)) {
-            // If this class knows how to configure it self
-            if (class_implements($object, __NAMESPACE__.'\IConfigurable')) {
-                // Call custom configuration implementation
-                return $object->configure($pointer);
-            } else { // Generic logic - implement entity configuration to object
-                return $pointer->configure($object, $params);
-            }
+            return $this->handleConfigure($object, $pointer, $params);
         }
 
         // Signal error
