@@ -21,7 +21,6 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
     {
         $this->manager = new Manager();
         $this->manager->init(__DIR__ . '/config/');
-        //var_dump($this->manager->schemes);
 
         // Get default scheme
         $this->globalScheme = & $this->manager->schemes[Scheme::BASE];
@@ -117,7 +116,7 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $this->manager->change();
 
         // Configure object
-        $this->manager->configure($object, 'testconfigureablemodule');
+        $this->manager->configure($object, 'testconfigurablemodule');
 
         $this->assertNotEquals('1', $object->parameterInt);
         $this->assertNotEquals('1', $object->parameterString);

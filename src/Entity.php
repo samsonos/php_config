@@ -16,7 +16,7 @@ class Entity
     const FILE_PATTERN = '*Config.php';
 
     /** Entity configuration class name pattern */
-    const CLASS_PATTERN = '/Config$/';
+    const CLASS_PATTERN = '/Config$/i';
 
     /**
      * Configure object with configuration entity parameters.
@@ -30,9 +30,8 @@ class Entity
      */
     public function configure(& $object, $params = null)
     {
-        var_dump(class_implements($object, '\samsonos\config\IConfigurable'));
         // If this class knows how to configure it self
-        if (class_implements($object, '\samsonos\config\IConfigurable')) {
+        if (class_implements($object, __NAMESPACE__.'\IConfigurable')) {
             // Call custom configuration implementation
             return $object->configure($this);
         } else { // Generic logic

@@ -21,7 +21,6 @@ class TestConfigurableModule implements \samsonos\config\IConfigurable
      */
     public function configure(Entity $entityConfiguration)
     {
-        var_dump($this);
         $this->parameterArray['configurable'] = 'custom configure implementation';
     }
 }

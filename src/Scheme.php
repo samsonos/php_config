@@ -93,7 +93,8 @@ class Scheme
             $class = substr($class, $classNamePos+1);
         }
 
-        return str_replace('config', '', strtolower($class));
+        // Remove only last occurrence of pattern
+        return preg_replace(Entity::CLASS_PATTERN, '', strtolower($class));
     }
 
     /**

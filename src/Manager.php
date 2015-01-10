@@ -30,6 +30,7 @@ class Manager
     {
         // Fill array of entity files with keys of file names without extension
         foreach (glob($path .'/'. Entity::FILE_PATTERN) as $file) {
+            $file = realpath($file);
             // If we have not already loaded this class before with other schemes
             if (!isset(self::$classes[$file])) {
                 // Store loaded classes
