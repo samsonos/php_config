@@ -83,6 +83,9 @@ class Manager
                     'Cannot change configuration scheme to ['.$environment.'] - Configuration scheme does not exists'
                 )
             );
+
+            // Set global scheme as active
+            $this->active = & $this->schemes[Scheme::BASE];
         }
     }
 

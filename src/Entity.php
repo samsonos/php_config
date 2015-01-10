@@ -26,19 +26,25 @@ class Entity
      * @param mixed $object Object for configuration with entity
      * @param array|null $params Collection of configuration parameters
      *
-     * @return boolean True
+     * @return boolean True if everything is fine, otherwise false
      */
     public function configure(& $object, $params = null)
     {
-        // Use entity params if external is not passed, iterate all children class variables
-        foreach (isset($params) ? $params : get_object_vars($this) as $var => $value) {
-            // If module has configured property defined
-            if (property_exists($object, $var)) {
-                // Set module variable value
-                $object->$var = $value;
+        // If this class knows how to configure it self
+        if (class_implements($object, '\samsonos\config\IConfigurable')) {
+            // Call custom configuration implementation
+            return $object->configure($this);
+        } else { // Generic logic
+            // Use entity params if external is not passed, iterate all children class variables
+            foreach (isset($params) ? $params : get_object_vars($this) as $var => $value) {
+                // If module has configured property defined
+                if (property_exists($object, $var)) {
+                    // Set module variable value
+                    $object->$var = $value;
+                }
             }
-        }
 
-        return true;
+            return true;
+        }
     }
 }
