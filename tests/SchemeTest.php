@@ -28,6 +28,8 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
 
         // Import object for testing
         require_once 'TestModule.php';
+        // Import object for testing
+        require_once 'TestConfigurableModule.php';
     }
 
     /** Test Init */
@@ -104,5 +106,21 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1', $object->parameterInt);
         $this->assertEquals('1', $object->parameterString);
         $this->assertArrayHasKey('global', $object->parameterArray);
+    }
+
+    /** Test custom configure implementation */
+    public function testConfigureImplementation()
+    {
+        $object = new TestConfigurableModule();
+
+        // Switch to global configuration scheme
+        $this->manager->change();
+
+        // Configure object
+        $this->manager->configure($object, 'testconfigureablemodule');
+
+        $this->assertNotEquals('1', $object->parameterInt);
+        $this->assertNotEquals('1', $object->parameterString);
+        $this->assertArrayHasKey('configurable', $object->parameterArray);
     }
 }

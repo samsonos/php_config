@@ -30,6 +30,7 @@ class Entity
      */
     public function configure(& $object, $params = null)
     {
+        var_dump(class_implements($object, '\samsonos\config\IConfigurable'));
         // If this class knows how to configure it self
         if (class_implements($object, '\samsonos\config\IConfigurable')) {
             // Call custom configuration implementation

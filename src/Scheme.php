@@ -1,6 +1,8 @@
 <?php
 namespace samsonos\config;
 
+use samson\core\Event;
+
 /**
  * Generic SamsonPHP core configuration system
  * @author Vitaly Egorov <egorov@samsonos.com>
@@ -139,6 +141,14 @@ class Scheme
         if (isset($pointer)) {
             // Implement entity configuration to object
             return $pointer->configure($object, $params);
+        } else { // Signal error
+            Event::fire(
+                'error',
+                array(
+                    $this,
+                    'Cannot configure entity['.$identifier.'] - Entity configuration does not exists'
+                )
+            );
         }
 
         // We have failed
