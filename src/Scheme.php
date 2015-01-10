@@ -131,7 +131,7 @@ class Scheme
     protected function handleConfigure(& $object, Entity & $entity, $params = null)
     {
         // If this class knows how to configure it self
-        if (class_implements($object, __NAMESPACE__.'\IConfigurable')) {
+        if (in_array(__NAMESPACE__.'\IConfigurable', class_implements($object))) {
             /** @var IConfigurable $object */
             // Call custom configuration implementation
             return $object->configure($entity);
