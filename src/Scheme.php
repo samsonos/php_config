@@ -152,10 +152,8 @@ class Scheme
     public function configure(& $object, $identifier = null, $params = null)
     {
         // If no entity identifier is passed get it from object class
-        $identifier = isset($identifier) ? $identifier : $this->identifier(get_class($object));
-
         /** @var Entity $pointer Pointer to entity instance */
-        $pointer = $this->entity($identifier);
+        $pointer = $this->entity(isset($identifier) ? $identifier : get_class($object));
 
         // If we have found this entity configuration
         if (isset($pointer)) {
