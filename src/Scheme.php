@@ -73,8 +73,7 @@ class Scheme
                 $reflector = new \ReflectionClass($class);
 
                 // Get path to file if it matches current scheme path
-                similar_text($this->path, dirname($reflector->getFileName()), $percent);
-                if ($percent > 80) {
+                if (dirname($reflector->getFileName()) == $this->path) {
                     // Store module identifier - entity configuration object
                     $this->entities[$this->identifier($class)] = new $class();
                 }
