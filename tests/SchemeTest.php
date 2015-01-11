@@ -134,8 +134,6 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         // Configure object
         $this->manager->configure($object);
 
-        var_dump($object);
-
         $this->assertEquals('77', $object->parameterInt);
         $this->assertEquals('77', $object->parameterString);
         $this->assertArrayHasKey('global2', $object->parameterArray);
