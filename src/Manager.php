@@ -130,6 +130,8 @@ class Manager
         // Check if have NOT already created configuration for this environment
         if (!isset($pointer)) {
             $pointer = new Scheme(realpath($path . '/'), $environment);
+        } else { // Load data to existing configuration scheme
+            $pointer->load();
         }
     }
 
