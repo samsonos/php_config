@@ -122,4 +122,22 @@ class SchemeTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals('1', $object->parameterString);
         $this->assertArrayHasKey('configurable', $object->parameterArray);
     }
+
+    public function testOtherBasePath()
+    {
+        // Create object for configuration
+        $object = new TestModule();
+
+        // Init manager on other project location/namespace
+        $this->manager->init(__DIR__.'/config2/');
+
+        // Configure object
+        $this->manager->configure($object);
+
+        var_dump($object);
+
+        $this->assertEquals('77', $object->parameterInt);
+        $this->assertEquals('77', $object->parameterString);
+        $this->assertArrayHasKey('global2', $object->parameterArray);
+    }
 }

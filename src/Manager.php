@@ -96,13 +96,11 @@ class Manager
      */
     public function init($basePath)
     {
-        // Create global scheme instance if have not done it already
-        if (!isset($this->schemes[Scheme::BASE])) {
-            $this->create($basePath, Scheme::BASE);
+        // Create global scheme instance
+        $this->create($basePath, Scheme::BASE);
 
-            // Set current as active
-            $this->change();
-        }
+        // Switch to global environment
+        $this->change();
 
         // Read all directories in base configuration path
         foreach (glob($basePath . '*', GLOB_ONLYDIR) as $path) {
@@ -131,7 +129,7 @@ class Manager
         if (!isset($pointer)) {
             $pointer = new Scheme(realpath($path . '/'), $environment);
         } else { // Load data to existing configuration scheme
-            $pointer->load();
+            $pointer->load(realpath($path . '/'));
         }
     }
 

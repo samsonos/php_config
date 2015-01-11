@@ -22,8 +22,8 @@ class Scheme
     /** @var string Current configuration environment */
     protected $environment;
 
-    /** @var string Configuration folder path */
-    protected $path;
+    /** @var array Configuration folder path array */
+    protected $path = array();
 
     /** @var array Collection of module identifier => configurator class */
     public $entities = array();
@@ -48,13 +48,10 @@ class Scheme
         // Store current configuration environment
         $this->environment = $environment;
 
-        // Build path to environment configuration folder
-        $this->path = $path;
-
         // Check scheme folder existence
-        if (file_exists($this->path)) {
+        if (file_exists($path)) {
             // Load scheme entities
-            $this->load();
+            $this->load($path);
         }
     }
 
@@ -63,8 +60,11 @@ class Scheme
      * Function scans all required classes and matches them by
      * specified scheme path.
      */
-    public function load()
+    public function load($path = null)
     {
+        // Build path to environment configuration folder
+        $this->path[] = $path;
+
         // Iterate all loaded classes matching class name pattern
         foreach (preg_grep(Entity::CLASS_PATTERN, get_declared_classes()) as $class) {
             // If this is a entity configuration class ancestor
@@ -72,8 +72,8 @@ class Scheme
                 // Get class reflection object
                 $reflector = new \ReflectionClass($class);
 
-                // Get path to file if it matches current scheme path
-                if (dirname($reflector->getFileName()) == $this->path) {
+                // If path to class file is in scheme paths collection
+                if (in_array(dirname($reflector->getFileName()), $this->path)) {
                     // Store module identifier - entity configuration object
                     $this->entities[$this->identifier($class)] = new $class();
                 }
