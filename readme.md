@@ -120,13 +120,9 @@ $manager->init();
 ```
 
 ### Loading entity configuration classes
-We have created special static method for loading entity configuration ```samsonos\config\Manager::import($path)```, this method is used internally
-when configuration scheme is being created, but you can use anywhere before ```init()``` is called to manually loading entity configuration classes.
-
+We have created special static method for loading entity configuration ```samsonos\config\Manager::import($path)```, this method is used internally when configuration scheme is being created or loaded, for this tasks you should use ```init(path)```:
 ```php 
 $manager = new \samsonos\config\Manager();
-\samsonos\config\Manager::import('../my/custom/config/path);
-\samsonos\config\Manager::import('../my/custom/config/path2);
 $manager->init('.../path/to/base/folder');
 ```
 
@@ -138,8 +134,6 @@ If you want to change current active manager configuration use should use ```cha
 If you have separate base configuration folders with different configurations, for example one project inside another, and inner project want to take some configurations from parent object, you can load configuration from other location:
 ```php 
 $manager = new \samsonos\config\Manager();
-\samsonos\config\Manager::import('../my/custom/config/path);
-\samsonos\config\Manager::import('../my/custom/config/path2);
 $manager->init('.../path/to/base/folder');
 $manager->init('.../path/to/OTHER/folder');
 ```
