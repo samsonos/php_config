@@ -139,4 +139,10 @@ $manager->init('.../path/to/OTHER/folder');
 ```
 > IMPORTANT! Entity configuration for same environments in different locations are ovveritten.
 
+# Event system
+This module has only one external dependency - [Even system](https://github.com/samsonos/php_event), and all module interoperabily with outside world must me done using this approach. 
+Currently module does not firing any events, but has 2 subscriptions:
+* ```core.environment.change``` - When environment is changing outside
+* ```core.module.configure``` - When some object is being configured
+
 
