@@ -124,14 +124,25 @@ We have created special static method for loading entity configuration ```samson
 when configuration scheme is being created, but you can use anywhere before ```init()``` is called to manually loading entity configuration classes.
 
 ```php 
-$manager = new \samsonos\config\Manager('.../path/to/base/folder');
+$manager = new \samsonos\config\Manager();
 \samsonos\config\Manager::import('../my/custom/config/path);
 \samsonos\config\Manager::import('../my/custom/config/path2);
-$manager->init();
+$manager->init('.../path/to/base/folder');
 ```
 
 ### Switching configuration
 If you want to change current active manager configuration use should use ```change($identifier)``` method:
-* ```$identifier``` - Configuration scheme identifier
+* ```$identifier``` - Environment identifier(Configuration scheme identifier)
+* 
+### Load schemes from different locations
+If you have separate base configuration folders with different configurations, for example one project inside another, and inner project want to take some configurations from parent object, you can load configuration from other location:
+```php 
+$manager = new \samsonos\config\Manager();
+\samsonos\config\Manager::import('../my/custom/config/path);
+\samsonos\config\Manager::import('../my/custom/config/path2);
+$manager->init('.../path/to/base/folder');
+$manager->init('.../path/to/OTHER/folder');
+```
+> IMPORTANT! Entity configuration for same environments in different locations are ovveritten.
 
 
