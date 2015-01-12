@@ -120,18 +120,29 @@ $manager->init();
 ```
 
 ### Loading entity configuration classes
-We have created special static method for loading entity configuration ```samsonos\config\Manager::import($path)```, this method is used internally
-when configuration scheme is being created, but you can use anywhere before ```init()``` is called to manually loading entity configuration classes.
-
+We have created special static method for loading entity configuration ```samsonos\config\Manager::import($path)```, this method is used internally when configuration scheme is being created or loaded, for this tasks you should use ```init(path)```:
 ```php 
-$manager = new \samsonos\config\Manager('.../path/to/base/folder');
-\samsonos\config\Manager::import('../my/custom/config/path);
-\samsonos\config\Manager::import('../my/custom/config/path2);
-$manager->init();
+$manager = new \samsonos\config\Manager();
+$manager->init('.../path/to/base/folder');
 ```
 
 ### Switching configuration
 If you want to change current active manager configuration use should use ```change($identifier)``` method:
-* ```$identifier``` - Configuration scheme identifier
+* ```$identifier``` - Environment identifier(Configuration scheme identifier)
+* 
+### Load schemes from different locations
+If you have separate base configuration folders with different configurations, for example one project inside another, and inner project want to take some configurations from parent object, you can load configuration from other location:
+```php 
+$manager = new \samsonos\config\Manager();
+$manager->init('.../path/to/base/folder');
+$manager->init('.../path/to/OTHER/folder');
+```
+> IMPORTANT! Entity configuration for same environments in different locations are ovveritten.
+
+# Event system
+This module has only one external dependency - [Event system](https://github.com/samsonos/php_event) and all interoperabily with outside world must me done using this approach. 
+Currently module does not firing any events, but has 2 subscriptions:
+* ```core.environment.change``` - When environment is changing outside
+* ```core.module.configure``` - When some object is being configured
 
 
