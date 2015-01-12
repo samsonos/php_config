@@ -18,6 +18,9 @@ class Manager
     /** @var array Collection of file path -> class loaded */
     protected static $classes = array();
 
+    /** @var array Collection of files in current init */
+    protected static $files = array();
+
     /**
      * Load all entity configuration classes in specific location.
      *
@@ -28,8 +31,11 @@ class Manager
      */
     public static function import($path)
     {
+        // Read all files in path
+        self::$files = glob($path .'/'. Entity::FILE_PATTERN);
+
         // Fill array of entity files with keys of file names without extension
-        foreach (glob($path .'/'. Entity::FILE_PATTERN) as $file) {
+        foreach (self::$files as $file) {
             $file = realpath($file);
             // If we have not already loaded this class before with other schemes
             if (!isset(self::$classes[$file])) {
@@ -46,7 +52,6 @@ class Manager
         }
     }
 
-
     /** @var Scheme[] Collection of available schemes */
     public $schemes = array();
 
@@ -58,8 +63,28 @@ class Manager
      */
     public function __construct()
     {
+        // Add class auto loader
+        spl_autoload_register(array($this, 'autoload'));
+
         // Subscribe active configuration scheme to core module configure event
         Event::subscribe('core.environment.change', array($this, 'change'));
+    }
+
+    /**
+     * Configuration class autoloader.
+     * It helps resolve single configuration entity configuration dependencies
+     * @param string $className Class name for loading
+     */
+    public function autoload($className)
+    {
+        // If namespace is present
+        $class = substr($className, strrpos($className, '\\')+1);
+
+        // Try to find class file by class name without namespace
+        $matches = preg_grep('/'.$class.'/i', self::$files);
+        if (sizeof($matches)) {
+            require_once(end($matches));
+        }
     }
 
     /**
